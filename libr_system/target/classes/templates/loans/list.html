@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Выдачи книг - Библиотека</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <style>
+        body {
+            background-color: #f8fafc;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        }
+
+        .card {
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            margin-bottom: 20px;
+        }
+
+        .table {
+            margin-bottom: 0;
+        }
+
+        .table th {
+            font-weight: 600;
+            color: #475569;
+            border-bottom: 2px solid #e2e8f0;
+            padding: 15px 12px;
+        }
+
+        .table td {
+            padding: 12px;
+            vertical-align: middle;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .table tbody tr:hover {
+            background-color: #f8fafc;
+        }
+
+        .btn {
+            border-radius: 8px;
+            font-weight: 500;
+            padding: 8px 20px;
+        }
+
+        .btn-primary {
+            background-color: #4299e1;
+            border-color: #4299e1;
+        }
+
+        .btn-primary:hover {
+            background-color: #3182ce;
+            border-color: #3182ce;
+        }
+
+        .btn-outline-warning {
+            color: #ed8936;
+            border-color: #ed8936;
+        }
+
+        .btn-outline-warning:hover {
+            background-color: #ed8936;
+            border-color: #ed8936;
+            color: white;
+        }
+
+        .btn-outline-danger {
+            color: #e53e3e;
+            border-color: #e53e3e;
+        }
+
+        .btn-outline-danger:hover {
+            background-color: #e53e3e;
+            border-color: #e53e3e;
+            color: white;
+        }
+
+        .btn-outline-success {
+            color: #38a169;
+            border-color: #38a169;
+        }
+
+        .btn-outline-success:hover {
+            background-color: #38a169;
+            border-color: #38a169;
+            color: white;
+        }
+
+        .search-box {
+            border-radius: 8px;
+            border: 2px solid #e2e8f0;
+            padding: 8px 20px;
+            transition: all 0.3s;
+        }
+
+        .search-box:focus {
+            border-color: #4299e1;
+            box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.1);
+        }
+
+        .empty-state {
+            padding: 60px 20px;
+            text-align: center;
+        }
+
+        .empty-state i {
+            font-size: 4rem;
+            color: #cbd5e1;
+            margin-bottom: 20px;
+        }
+
+        .nav-container {
+            background: white;
+            padding: 1rem 0;
+            border-bottom: 1px solid #e2e8f0;
+            margin-bottom: 2rem;
+        }
+
+        .nav-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 1rem;
+        }
+
+        .nav-brand {
+            font-weight: 700;
+            font-size: 1.25rem;
+            color: #2c5282;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .nav-link {
+            color: #4a5568;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            background-color: #ebf8ff;
+            color: #4299e1;
+        }
+
+        .page-header {
+            max-width: 1200px;
+            margin: 0 auto 2rem;
+            padding: 0 1rem;
+        }
+
+        .main-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e2e8f0;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .filter-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .status-badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .status-active {
+            background-color: #c6f6d5;
+            color: #22543d;
+        }
+
+        .status-overdue {
+            background-color: #fed7d7;
+            color: #742a2a;
+        }
+
+        .status-returned {
+            background-color: #e2e8f0;
+            color: #2d3748;
+        }
+    </style>
+</head>
+<body>
+<div class="nav-container">
+    <div class="nav-content">
+        <a class="nav-brand" href="/">
+            <i class="bi bi-book"></i>
+            <span>Библиотечная система</span>
+        </a>
+        <div class="nav-links">
+            <a class="nav-link" href="/books">📚 Книги</a>
+            <a class="nav-link" href="/readers">👥 Читатели</a>
+            <a class="nav-link" href="/librarians">👨‍💼 Библиотекари</a>
+            <a class="nav-link active" href="/loans">📖 Выдачи</a>
+        </div>
+    </div>
+</div>
+
+<div class="page-header">
+    <div class="d-flex justify-content-between align-items-center">
+        <div>
+            <h2 class="fw-bold mb-2">📖 Управление выдачами</h2>
+            <p class="text-muted mb-0">Регистрация и отслеживание выдачи книг</p>
+        </div>
+        <div>
+            <a href="/loans/new" class="btn btn-primary">
+                <i class="bi bi-plus-circle me-2"></i>Новая выдача
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="main-container">
+    <!-- Поиск -->
+    <div class="card">
+        <div class="card-body">
+            <form th:action="@{/loans/search}" method="get" class="row g-3 align-items-center">
+                <div class="col-md-10">
+                    <div class="input-group">
+                            <span class="input-group-text bg-transparent border-end-0">
+                                <i class="bi bi-search text-muted"></i>
+                            </span>
+                        <input type="text"
+                               name="keyword"
+                               class="form-control search-box border-start-0"
+                               placeholder="Поиск по книге, читателю или библиотекарю..."
+                               th:value="${searchKeyword}">
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-search me-1"></i>Найти
+                        </button>
+                    </div>
+                </div>
+            </form>
+
+            <!-- Фильтры -->
+            <div class="filter-buttons">
+                <a th:href="@{/loans}"
+                   class="btn btn-sm"
+                   th:classappend="${activeFilter == 'all' or activeFilter == null} ? 'btn-primary' : 'btn-outline-primary'">
+                    Все выдачи
+                    <span class="badge bg-light text-dark ms-1" th:text="${loans.size()}">0</span>
+                </a>
+                <a th:href="@{/loans/active}"
+                   class="btn btn-sm"
+                   th:classappend="${activeFilter == 'active'} ? 'btn-warning' : 'btn-outline-warning'">
+                    Активные
+                    <span class="badge bg-light text-dark ms-1" th:text="${activeLoans != null ? activeLoans.size() : 0}">0</span>
+                </a>
+                <a th:href="@{/loans/overdue}"
+                   class="btn btn-sm"
+                   th:classappend="${activeFilter == 'overdue'} ? 'btn-danger' : 'btn-outline-danger'">
+                    Просроченные
+                    <span class="badge bg-light text-dark ms-1" th:text="${overdueLoans != null ? overdueLoans.size() : 0}">0</span>
+                </a>
+                <a th:href="@{/loans/returned}"
+                   class="btn btn-sm"
+                   th:classappend="${activeFilter == 'returned'} ? 'btn-secondary' : 'btn-outline-secondary'">
+                    Возвращенные
+                    <span class="badge bg-light text-dark ms-1" th:text="${returnedCount != null ? returnedCount : 0}">0</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Статистика -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <div class="stat-number text-primary" th:text="${loans.size()}">0</div>
+                    <div class="text-muted">Всего выдач</div>
+                </div>
+                <i class="bi bi-list text-primary" style="font-size: 2rem;"></i>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <div class="stat-number text-warning" th:text="${activeLoans != null ? activeLoans.size() : 0}">0</div>
+                    <div class="text-muted">Активные выдачи</div>
+                </div>
+                <i class="bi bi-clock text-warning" style="font-size: 2rem;"></i>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <div class="stat-number text-danger" th:text="${overdueLoans != null ? overdueLoans.size() : 0}">0</div>
+                    <div class="text-muted">Просроченные</div>
+                </div>
+                <i class="bi bi-exclamation-triangle text-danger" style="font-size: 2rem;"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- Таблица выдач -->
+    <div class="card">
+        <div class="card-header bg-white">
+            <div class="d-flex justify-content-between align-items-center">
+                <h5 class="mb-0 fw-bold">
+                    <span th:if="${searchKeyword != null}">Результаты поиска</span>
+                    <span th:if="${searchKeyword == null}">Список выдач</span>
+                </h5>
+                <div>
+                    <span class="text-primary fw-bold" th:text="${loans.size()}">0</span>
+                    <span th:if="${searchKeyword != null}" class="ms-2">
+                            <a th:href="@{/loans}" class="btn btn-sm btn-outline-secondary">
+                                Сбросить
+                            </a>
+                        </span>
+                </div>
+            </div>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>Книга</th>
+                    <th>Читатель</th>
+                    <th>Даты</th>
+                    <th>Статус</th>
+                    <th width="140" class="text-center">Действия</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="loan : ${loans}">
+                    <td>
+                        <div th:if="${loan.book != null}">
+                            <strong th:text="${loan.book.title}"></strong><br>
+                            <small class="text-muted" th:text="${loan.book.author}"></small>
+                        </div>
+                        <div th:if="${loan.book == null}">
+                            <span class="text-muted">Книга удалена</span>
+                        </div>
+                    </td>
+                    <td>
+                        <div th:if="${loan.reader != null}">
+                            <span th:text="${loan.reader.fullName}"></span>
+                        </div>
+                        <div th:if="${loan.reader == null}">
+                            <span class="text-muted">Читатель удален</span>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="small">
+                            <div>Выдана: <span th:text="${#temporals.format(loan.loanDate, 'dd.MM.yyyy')}"></span></div>
+                            <div>Вернуть: <span th:text="${#temporals.format(loan.dueDate, 'dd.MM.yyyy')}"></span></div>
+                            <div th:if="${loan.returnDate != null}">
+                                Возвращена: <span th:text="${#temporals.format(loan.returnDate, 'dd.MM.yyyy')}"></span>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                            <span th:if="${loan.returnDate != null}" class="status-badge status-returned">
+                                <i class="bi bi-check-circle"></i> Возвращена
+                            </span>
+                        <span th:if="${loan.returnDate == null and loan.dueDate.isBefore(T(java.time.LocalDate).now())}"
+                              class="status-badge status-overdue">
+                                <i class="bi bi-exclamation-triangle"></i> Просрочена
+                            </span>
+                        <span th:if="${loan.returnDate == null and loan.dueDate.isAfter(T(java.time.LocalDate).now())}"
+                              class="status-badge status-active">
+                                <i class="bi bi-clock"></i> Активна
+                            </span>
+                    </td>
+                    <td class="text-center">
+                        <div class="btn-group" role="group">
+                            <a th:if="${loan.returnDate == null}"
+                               th:href="@{/loans/return/{id}(id=${loan.id})}"
+                               class="btn btn-sm btn-outline-success"
+                               onclick="return confirm('Подтвердить возврат книги?')">
+                                <i class="bi bi-check-lg"></i>
+                            </a>
+                            <a th:href="@{/loans/delete/{id}(id=${loan.id})}"
+                               class="btn btn-sm btn-outline-danger"
+                               onclick="return confirm('Удалить запись о выдаче?')">
+                                <i class="bi bi-trash"></i>
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Пустое состояние -->
+        <div th:if="${loans == null or loans.empty}" class="empty-state">
+            <i class="bi bi-book"></i>
+            <h5 class="mb-2">
+                <span th:if="${searchKeyword != null}">Выдачи не найдены</span>
+                <span th:if="${searchKeyword == null}">Записей о выдачах нет</span>
+            </h5>
+            <p class="text-muted mb-4" th:if="${searchKeyword != null}">
+                По запросу "<span th:text="${searchKeyword}"></span>" ничего не найдено
+            </p>
+            <a href="/loans/new" class="btn btn-primary">
+                <i class="bi bi-plus-circle me-2"></i>Добавить первую выдачу
+            </a>
+        </div>
+
+        <!-- Футер -->
+        <div class="card-footer bg-white">
+            <div class="d-flex justify-content-between align-items-center">
+                <small class="text-muted">
+                    <i class="bi bi-clock me-1"></i>Обновлено: <span th:text="${#dates.format(#dates.createNow(), 'dd.MM.yyyy HH:mm')}"></span>
+                </small>
+                <div>
+                    <a th:href="@{/loans}" class="btn btn-sm btn-outline-secondary">
+                        <i class="bi bi-arrow-clockwise me-1"></i>Обновить
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.querySelector('input[name="keyword"]');
+        if (searchInput) {
+            searchInput.focus();
+        }
+    });
+</script>
+</body>
+</html>

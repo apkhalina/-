@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Библиотечная система</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f0f8ff;
+        }
+
+        .dashboard-card {
+            transition: transform 0.3s;
+            height: 200px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .dashboard-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        .card-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+        }
+
+        .btn-primary {
+            background-color: #3498db;
+            border-color: #3498db;
+            border-radius: 50px; /* Овальная форма */
+            padding: 10px 30px; /* Увеличим паддинг для лучшего вида */
+        }
+
+        .btn-primary:hover {
+            background-color: #2980b9;
+            border-color: #2980b9;
+        }
+    </style>
+</head>
+<body>
+<div class="container mt-5">
+    <div class="text-center mb-5">
+        <h1 class="display-4">Добро пожаловать в Библиотечную систему</h1>
+        <p class="lead">Цифровая платформа для управления книгами, читателями, сотрудниками и библиотечными операциями</p>
+    </div>
+
+    <div class="row">
+        <!-- Книги -->
+        <div class="col-md-3 mb-4">
+            <div class="card dashboard-card text-center">
+                <div class="card-body">
+                    <h5 class="card-title">📚 Книги</h5>
+                    <p class="card-text">Управление каталогом книг</p>
+                    <a href="/books" class="btn btn-primary">Перейти к книгам</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Читатели -->
+        <div class="col-md-3 mb-4">
+            <div class="card dashboard-card text-center">
+                <div class="card-body">
+                    <h5 class="card-title">👥 Читатели</h5>
+                    <p class="card-text">Управление читателями</p>
+                    <a href="/readers" class="btn btn-primary">Перейти к читателям</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Библиотекари -->
+        <div class="col-md-3 mb-4">
+            <div class="card dashboard-card text-center">
+                <div class="card-body">
+                    <h5 class="card-title">👨‍💼 Библиотекари</h5>
+                    <p class="card-text">Управление сотрудниками</p>
+                    <a href="/librarians" class="btn btn-primary">Перейти к библиотекарям</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Выдачи -->
+        <div class="col-md-3 mb-4">
+            <div class="card dashboard-card text-center">
+                <div class="card-body">
+                    <h5 class="card-title">📖 Выдачи</h5>
+                    <p class="card-text">Управление выдачами книг</p>
+                    <a href="/loans" class="btn btn-primary">Перейти к выдачам</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer class="mt-5 pt-4 border-top text-center text-muted">
+    <p>Библиотечная система управления © 2026</p>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

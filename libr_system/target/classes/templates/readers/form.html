@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${reader.id != null ? 'Редактирование читателя' : 'Добавление читателя'}">Форма читателя</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <style>
+        body {
+            background-color: #f8fafc;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .container-custom {
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+
+        .form-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .form-header h2 {
+            color: #2c5282;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-header p {
+            color: #718096;
+            font-size: 1rem;
+        }
+
+        .form-card {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e2e8f0;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #4a5568;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-control {
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 0.75rem 1rem;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .form-control:focus {
+            border-color: #4299e1;
+            box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.15);
+        }
+
+        .is-invalid {
+            border-color: #fc8181 !important;
+        }
+
+        .error-message {
+            color: #e53e3e;
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .form-actions {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .btn {
+            border-radius: 8px;
+            padding: 0.75rem 1.5rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-cancel {
+            background-color: #718096;
+            border-color: #718096;
+            color: white;
+        }
+
+        .btn-cancel:hover {
+            background-color: #4a5568;
+            border-color: #4a5568;
+        }
+
+        .btn-submit {
+            background-color: #38a169;
+            border-color: #38a169;
+            color: white;
+        }
+
+        .btn-submit:hover {
+            background-color: #2f855a;
+            border-color: #2f855a;
+        }
+
+        .btn-edit {
+            background-color: #ed8936;
+            border-color: #ed8936;
+            color: white;
+        }
+
+        .btn-edit:hover {
+            background-color: #dd6b20;
+            border-color: #dd6b20;
+        }
+
+        .help-text {
+            color: #a0aec0;
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+        }
+
+        .required-star {
+            color: #e53e3e;
+        }
+
+        .nav-container {
+            background: white;
+            padding: 1rem 0;
+            border-bottom: 1px solid #e2e8f0;
+            margin-bottom: 2rem;
+        }
+
+        .nav-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 1rem;
+        }
+
+        .nav-brand {
+            font-weight: 700;
+            font-size: 1.25rem;
+            color: #2c5282;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .nav-link {
+            color: #4a5568;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            background-color: #ebf8ff;
+            color: #4299e1;
+        }
+
+        .info-box {
+            background: #f0f9ff;
+            border: 1px solid #bee3f8;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+        }
+    </style>
+</head>
+<body>
+<div class="nav-container">
+    <div class="nav-content">
+        <a class="nav-brand" href="/">
+            <i class="bi bi-book"></i>
+            <span>Библиотечная система</span>
+        </a>
+        <div class="nav-links">
+            <a class="nav-link" href="/books">📚 Книги</a>
+            <a class="nav-link active" href="/readers">👥 Читатели</a>
+            <a class="nav-link" href="/librarians">👨‍💼 Библиотекари</a>
+            <a class="nav-link" href="/loans">📖 Выдачи</a>
+        </div>
+    </div>
+</div>
+
+<div class="container-custom">
+    <div class="form-header">
+        <h2>
+            <i class="bi bi-person"></i>
+            <span th:text="${reader.id != null ? 'Редактировать читателя' : 'Добавить нового читателя'}"></span>
+        </h2>
+        <p th:text="${reader.id != null ? 'Обновите информацию о читателе' : 'Заполните данные для регистрации читателя'}"></p>
+    </div>
+
+    <div class="form-card">
+        <form th:action="${reader.id != null ? '/readers/update/' + reader.id : '/readers'}"
+              th:object="${reader}" method="post" id="readerForm">
+
+            <div class="form-group">
+                <label class="form-label" for="ticketNumber">
+                    <i class="bi bi-person-badge"></i>
+                    <span>Номер читательского билета</span>
+                    <span class="required-star">*</span>
+                </label>
+                <input type="text"
+                       class="form-control"
+                       id="ticketNumber"
+                       th:field="*{ticketNumber}"
+                       th:classappend="${#fields.hasErrors('ticketNumber')} ? 'is-invalid' : ''"
+                       placeholder="Например: 123456">
+                <div th:if="${#fields.hasErrors('ticketNumber')}" class="error-message">
+                    <i class="bi bi-exclamation-circle"></i>
+                    <span th:errors="*{ticketNumber}"></span>
+                </div>
+                <div class="help-text">Уникальный номер билета читателя</div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="fullName">
+                    <i class="bi bi-person"></i>
+                    <span>ФИО читателя</span>
+                    <span class="required-star">*</span>
+                </label>
+                <input type="text"
+                       class="form-control"
+                       id="fullName"
+                       th:field="*{fullName}"
+                       th:classappend="${#fields.hasErrors('fullName')} ? 'is-invalid' : ''"
+                       placeholder="Введите полное имя читателя">
+                <div th:if="${#fields.hasErrors('fullName')}" class="error-message">
+                    <i class="bi bi-exclamation-circle"></i>
+                    <span th:errors="*{fullName}"></span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="phoneNumber">
+                    <i class="bi bi-telephone"></i>
+                    <span>Номер телефона</span>
+                    <span class="required-star">*</span>
+                </label>
+                <input type="tel"
+                       class="form-control"
+                       id="phoneNumber"
+                       th:field="*{phoneNumber}"
+                       th:classappend="${#fields.hasErrors('phoneNumber')} ? 'is-invalid' : ''"
+                       placeholder="+7(999)999-99-99">
+                <div th:if="${#fields.hasErrors('phoneNumber')}" class="error-message">
+                    <i class="bi bi-exclamation-circle"></i>
+                    <span th:errors="*{phoneNumber}"></span>
+                </div>
+                <div class="help-text">Формат: +7(XXX)XXX-XX-XX</div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="registrationDate">
+                    <i class="bi bi-calendar"></i>
+                    <span>Дата регистрации</span>
+                </label>
+                <input type="date"
+                       class="form-control"
+                       id="registrationDate"
+                       th:field="*{registrationDate}">
+                <div class="help-text">По умолчанию: текущая дата</div>
+            </div>
+
+            <div class="form-actions">
+                <a href="/readers" class="btn btn-cancel">
+                    <i class="bi bi-arrow-left"></i>
+                    <span>Отмена</span>
+                </a>
+                <button type="submit" th:classappend="${reader.id != null ? 'btn-edit' : 'btn-submit'}" class="btn">
+                    <i th:classappend="${reader.id != null ? 'bi-check-circle' : 'bi-save'}"></i>
+                    <span th:text="${reader.id != null ? 'Сохранить изменения' : 'Добавить читателя'}"></span>
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <div class="info-box">
+        <div class="d-flex">
+            <i class="bi bi-info-circle text-primary me-2"></i>
+            <div>
+                <h6 class="mb-2 fw-bold">Информация для заполнения</h6>
+                <ul class="mb-0 text-muted">
+                    <li>Номер читательского билета должен быть уникальным</li>
+                    <li>Телефон должен соответствовать формату +7(XXX)XXX-XX-XX</li>
+                    <li>Поля с <span class="required-star">*</span> обязательны</li>
+                    <li>Номер телефона также должен быть уникальным</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const phoneInput = document.getElementById('phoneNumber');
+
+        // Автоматическое форматирование телефона
+        phoneInput.addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+
+            if (value.startsWith('7') || value.startsWith('8')) {
+                value = value.substring(1);
+            }
+
+            if (value.length > 0) {
+                let formatted = '+7(';
+
+                if (value.length > 0) {
+                    formatted += value.substring(0, Math.min(3, value.length));
+                }
+
+                if (value.length > 3) {
+                    formatted += ')' + value.substring(3, Math.min(6, value.length));
+                }
+
+                if (value.length > 6) {
+                    formatted += '-' + value.substring(6, Math.min(8, value.length));
+                }
+
+                if (value.length > 8) {
+                    formatted += '-' + value.substring(8, Math.min(10, value.length));
+                }
+
+                e.target.value = formatted;
+            }
+        });
+
+        // Валидация формы
+        document.getElementById('readerForm').addEventListener('submit', function(e) {
+            const phonePattern = /^\+7\(\d{3}\)\d{3}-\d{2}-\d{2}$/;
+
+            if (!phonePattern.test(phoneInput.value)) {
+                e.preventDefault();
+                alert('Пожалуйста, введите номер телефона в формате +7(XXX)XXX-XX-XX');
+                phoneInput.focus();
+                return false;
+            }
+
+            return true;
+        });
+
+        // Фокус на первом поле
+        const ticketInput = document.getElementById('ticketNumber');
+        if (ticketInput) {
+            ticketInput.focus();
+        }
+
+        // Установка текущей даты по умолчанию
+        const dateInput = document.getElementById('registrationDate');
+        if (dateInput && !dateInput.value) {
+            const today = new Date().toISOString().split('T')[0];
+            dateInput.value = today;
+        }
+    });
+</script>
+</body>
+</html>

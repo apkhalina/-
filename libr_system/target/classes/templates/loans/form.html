@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Оформление выдачи книги</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <style>
+        body {
+            background-color: #f8fafc;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .container-custom {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+
+        .form-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .form-header h2 {
+            color: #2c5282;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-header p {
+            color: #718096;
+            font-size: 1rem;
+        }
+
+        .form-card {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e2e8f0;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #4a5568;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-control, .form-select {
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 0.75rem 1rem;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: #4299e1;
+            box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.15);
+        }
+
+        .is-invalid {
+            border-color: #fc8181 !important;
+        }
+
+        .error-message {
+            color: #e53e3e;
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .form-actions {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .btn {
+            border-radius: 8px;
+            padding: 0.75rem 1.5rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-cancel {
+            background-color: #718096;
+            border-color: #718096;
+            color: white;
+        }
+
+        .btn-cancel:hover {
+            background-color: #4a5568;
+            border-color: #4a5568;
+        }
+
+        .btn-submit {
+            background-color: #38a169;
+            border-color: #38a169;
+            color: white;
+        }
+
+        .btn-submit:hover {
+            background-color: #2f855a;
+            border-color: #2f855a;
+        }
+
+        .help-text {
+            color: #a0aec0;
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+        }
+
+        .required-star {
+            color: #e53e3e;
+        }
+
+        .nav-container {
+            background: white;
+            padding: 1rem 0;
+            border-bottom: 1px solid #e2e8f0;
+            margin-bottom: 2rem;
+        }
+
+        .nav-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 1rem;
+        }
+
+        .nav-brand {
+            font-weight: 700;
+            font-size: 1.25rem;
+            color: #2c5282;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .nav-link {
+            color: #4a5568;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            background-color: #ebf8ff;
+            color: #4299e1;
+        }
+
+        .info-box {
+            background: #f0f9ff;
+            border: 1px solid #bee3f8;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+        }
+    </style>
+</head>
+<body>
+<div class="nav-container">
+    <div class="nav-content">
+        <a class="nav-brand" href="/">
+            <i class="bi bi-book"></i>
+            <span>Библиотечная система</span>
+        </a>
+        <div class="nav-links">
+            <a class="nav-link" href="/books">📚 Книги</a>
+            <a class="nav-link" href="/readers">👥 Читатели</a>
+            <a class="nav-link" href="/librarians">👨‍💼 Библиотекари</a>
+            <a class="nav-link active" href="/loans">📖 Выдачи</a>
+        </div>
+    </div>
+</div>
+
+<div class="container-custom">
+    <div class="form-header">
+        <h2>
+            <i class="bi bi-journal-plus"></i>
+            <span>Оформление выдачи книги</span>
+        </h2>
+        <p>Заполните форму для регистрации выдачи книги читателю</p>
+    </div>
+
+    <div class="form-card">
+        <form th:action="@{/loans}" th:object="${loan}" method="post">
+
+            <div class="form-group">
+                <label class="form-label" for="book">
+                    <i class="bi bi-book"></i>
+                    <span>Выберите книгу</span>
+                    <span class="required-star">*</span>
+                </label>
+                <select class="form-select" id="book" th:field="*{book}" required>
+                    <option value="">-- Выберите книгу --</option>
+                    <option th:each="book : ${books}"
+                            th:value="${book.id}"
+                            th:text="${book.title + ' (' + book.author + ')'}">
+                    </option>
+                </select>
+                <div th:if="${#fields.hasErrors('book')}" class="error-message">
+                    <i class="bi bi-exclamation-circle"></i>
+                    <span th:errors="*{book}"></span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="reader">
+                    <i class="bi bi-person"></i>
+                    <span>Выберите читателя</span>
+                    <span class="required-star">*</span>
+                </label>
+                <select class="form-select" id="reader" th:field="*{reader}" required>
+                    <option value="">-- Выберите читателя --</option>
+                    <option th:each="reader : ${readers}"
+                            th:value="${reader.id}"
+                            th:text="${reader.fullName}">
+                    </option>
+                </select>
+                <div th:if="${#fields.hasErrors('reader')}" class="error-message">
+                    <i class="bi bi-exclamation-circle"></i>
+                    <span th:errors="*{reader}"></span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="librarian">
+                    <i class="bi bi-person-badge"></i>
+                    <span>Выберите библиотекаря</span>
+                    <span class="required-star">*</span>
+                </label>
+                <select class="form-select" id="librarian" th:field="*{librarian}" required>
+                    <option value="">-- Выберите библиотекаря --</option>
+                    <option th:each="librarian : ${librarians}"
+                            th:value="${librarian.id}"
+                            th:text="${librarian.fullName + ' (' + librarian.position + ')'}">
+                    </option>
+                </select>
+                <div th:if="${#fields.hasErrors('librarian')}" class="error-message">
+                    <i class="bi bi-exclamation-circle"></i>
+                    <span th:errors="*{librarian}"></span>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="form-label" for="loanDate">
+                            <i class="bi bi-calendar-check"></i>
+                            <span>Дата выдачи</span>
+                            <span class="required-star">*</span>
+                        </label>
+                        <input type="date" class="form-control" id="loanDate" th:field="*{loanDate}" required>
+                        <div th:if="${#fields.hasErrors('loanDate')}" class="error-message">
+                            <i class="bi bi-exclamation-circle"></i>
+                            <span th:errors="*{loanDate}"></span>
+                        </div>
+                        <div class="help-text">По умолчанию: текущая дата</div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="form-label" for="dueDate">
+                            <i class="bi bi-calendar-x"></i>
+                            <span>Срок возврата</span>
+                            <span class="required-star">*</span>
+                        </label>
+                        <input type="date" class="form-control" id="dueDate" th:field="*{dueDate}" required>
+                        <div th:if="${#fields.hasErrors('dueDate')}" class="error-message">
+                            <i class="bi bi-exclamation-circle"></i>
+                            <span th:errors="*{dueDate}"></span>
+                        </div>
+                        <div class="help-text">Рекомендуется: 14 дней</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <a href="/loans" class="btn btn-cancel">
+                    <i class="bi bi-arrow-left"></i>
+                    <span>Отмена</span>
+                </a>
+                <button type="submit" class="btn btn-submit">
+                    <i class="bi bi-check-circle"></i>
+                    <span>Оформить выдачу</span>
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <div class="info-box">
+        <div class="d-flex">
+            <i class="bi bi-info-circle text-primary me-2"></i>
+            <div>
+                <h6 class="mb-2 fw-bold">Правила выдачи книг</h6>
+                <ul class="mb-0 text-muted">
+                    <li>Максимальное количество книг на одного читателя: 3</li>
+                    <li>Стандартный срок выдачи: 14 календарных дней</li>
+                    <li>Возможность продления при отсутствии очереди</li>
+                    <li>Обязательство возмещения стоимости при утере</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const today = new Date().toISOString().split('T')[0];
+        const twoWeeksLater = new Date();
+        twoWeeksLater.setDate(twoWeeksLater.getDate() + 14);
+        const dueDate = twoWeeksLater.toISOString().split('T')[0];
+
+        if (!document.getElementById('loanDate').value) {
+            document.getElementById('loanDate').value = today;
+        }
+        if (!document.getElementById('dueDate').value) {
+            document.getElementById('dueDate').value = dueDate;
+        }
+
+        const bookSelect = document.getElementById('book');
+        if (bookSelect) {
+            bookSelect.focus();
+        }
+    });
+</script>
+</body>
+</html>
