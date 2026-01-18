@@ -5,6 +5,12 @@
 
 <img width="1510" height="696" alt="image" src="https://github.com/user-attachments/assets/5504b589-0eae-467f-afff-08e884e8d5e2" />
 
+<img width="1534" height="698" alt="image" src="https://github.com/user-attachments/assets/01a3efb7-4d83-4b7d-9a8c-2826fa955692" />
+
+<img width="1509" height="737" alt="image" src="https://github.com/user-attachments/assets/f467e0ee-e2a9-455d-afcf-ccef1470fa15" />
+
+
+
 ## Основные сущности
 - Книги (Book) - каталог библиотеки
 - Читатели (Reader) - зарегистрированные пользователи
